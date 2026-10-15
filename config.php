@@ -3,8 +3,8 @@ $mysql_server="127.0.0.1"; // localhost, 127.0.0.1
 $mysql_user="root"; // login
 $mysql_password=""; // heslo
 $mysql_port="3306"; // port
-$mysql_db="reklamne_studio"; // meno databazy
-$dir_name="reklamnestudio"; // meno adresara v ktorom je system (hlavny web)
+$mysql_db="objednavka"; // meno databazy
+$dir_name="objednavka"; // meno adresara v ktorom je system (hlavny web)
 
 $limit=5; 
 $pocet_sluzieb_na_objednavke=5;// kolko riadkov sluzieb bude v objednavke
