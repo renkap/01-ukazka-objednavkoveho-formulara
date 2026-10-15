@@ -1,5 +1,13 @@
 <?php
 
+function strip_tags_html($input) {
+	// Strip HTML tags
+	$input = strip_tags($input);
+	// Convert special characters to HTML entities
+	$input = htmlspecialchars($input);
+	// Return sanitized input
+	return $input;
+}
 
 
 
