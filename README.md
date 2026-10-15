@@ -5,7 +5,7 @@ Použité technológie: XAMPP, PHP, MySQL, Javascript. Je možné pozrieť na ww
 2. vytvorit adresar napr.objednavka
 3. nakopirovanie suborov do adresara objednavka
 4. spustit phpmyadmin
-5. Nad databázou spustiť sql
+5. Nad databázou dat import objednavka.sql
 6. Vytvorit adresar objednavka/admin
 7. Vytvorit adresar objednavka/admin/mdbootstrap do ktoreho je potrebne stiahnut akutalnu verziu  mdbootstrap
 8. Vytvoriť adrsár admin/prilohy do ktoreho sa budu zapisovat pridane prilohy
