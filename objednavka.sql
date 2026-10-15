@@ -1,13 +1,6 @@
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
---
--- Hostiteľ: 127.0.0.1
--- Čas generovania: St 14.Okt 2026, 21:54
--- Verzia serveru: 10.4.28-MariaDB
--- Verzia PHP: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -17,11 +10,8 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
---
--- Databáza: `reklamne_studio`
---
 
--- --------------------------------------------------------
+
 
 --
 -- Štruktúra tabuľky pre tabuľku `objednavka`
@@ -50,31 +40,50 @@ CREATE TABLE `objednavka` (
   `ID_pouzivatela` int(10) UNSIGNED DEFAULT NULL,
   `ID_zakaznika` int(10) UNSIGNED NOT NULL,
   `ID_zamestnanca` int(10) UNSIGNED DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- --------------------------------------------------------
+
+-- --------------------------------------------------------
 
 --
--- Kľúče pre exportované tabuľky
+-- Štruktúra tabuľky pre tabuľku `prilohy`
 --
 
---
--- Indexy pre tabuľku `objednavka`
---
-ALTER TABLE `objednavka`
-  ADD PRIMARY KEY (`ID_objednavky`),
-  ADD KEY `IXFK_Objednavka_Registrovany_Pouzivatel` (`ID_pouzivatela`),
-  ADD KEY `IXFK_Objednavka_Zakaznik` (`ID_zakaznika`),
-  ADD KEY `IXFK_Objednavka_Zamestnanec` (`ID_zamestnanca`);
+CREATE TABLE `prilohy` (
+  `ID_prilohy` int(10) UNSIGNED NOT NULL,
+  `Nazov_suboru` varchar(50) NOT NULL,
+  `ID_objednavky` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- AUTO_INCREMENT pre exportované tabuľky
+-- Sťahujem dáta pre tabuľku `prilohy`
 --
 
+
+-- --------------------------------------------------------
+
 --
--- AUTO_INCREMENT pre tabuľku `objednavka`
+-- Štruktúra tabuľky pre tabuľku `registrovany_pouzivatel`
 --
-ALTER TABLE `objednavka`
-  MODIFY `ID_objednavky` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
-  
+
+CREATE TABLE `registrovany_pouzivatel` (
+  `ID_pouzivatela` int(10) UNSIGNED NOT NULL,
+  `Pouz_Meno` varchar(50) NOT NULL,
+  `Pouz_Priezvisko` varchar(50) NOT NULL,
+  `Prihlasovacie_meno` varchar(50) NOT NULL,
+  `Prihlasovacie_heslo` varchar(50) NOT NULL,
+  `ID_prava` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- --------------------------------------------------------
+
+--
+-- Štruktúra tabuľky pre tabuľku `sluzba`
+--
+
 CREATE TABLE `sluzba` (
   `ID_sluzby` int(10) UNSIGNED NOT NULL,
   `Nazov` varchar(100) NOT NULL,
@@ -83,7 +92,7 @@ CREATE TABLE `sluzba` (
   `Zobrazit_rozmery` tinyint(1) DEFAULT NULL,
   `Zobrazit_velkost` tinyint(1) DEFAULT NULL,
   `Zobrazovat_sluzbu` tinyint(1) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Sťahujem dáta pre tabuľku `sluzba`
@@ -110,23 +119,202 @@ INSERT INTO `sluzba` (`ID_sluzby`, `Nazov`, `Farby`, `Dostupne_formaty`, `Zobraz
 (25, 'Potlač príveskov', 'biela,žltá,modrá,čierna,modrá,zlatá,strieborná', '37mm,56mm', 0, 0, 1),
 (26, 'Potlač sviečok s vlastným motívom', 'oranžová,žltá,ružová,fialová,modrá', 'malá Ø7x7 cm,stredná Ø7x10cm,veľká Ø7x12cm', 0, 0, 1);
 
+-- --------------------------------------------------------
+
+
+-- --------------------------------------------------------
+
+--
+-- Štruktúra tabuľky pre tabuľku `sluzby_na_objednavke`
+--
+
+CREATE TABLE `sluzby_na_objednavke` (
+  `ID_sluzby_na_objednavke` int(10) UNSIGNED NOT NULL,
+  `Pocet_kusov` int(11) NOT NULL,
+  `Rozmer_sirka` int(10) UNSIGNED DEFAULT NULL,
+  `Rozmer_vyska` int(10) UNSIGNED DEFAULT NULL,
+  `Farba` varchar(30) DEFAULT NULL,
+  `Format` varchar(30) DEFAULT NULL,
+  `Velkost` varchar(10) DEFAULT NULL,
+  `ID_objednavky` int(10) UNSIGNED NOT NULL,
+  `ID_sluzby` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- --------------------------------------------------------
+
+--
+-- Štruktúra tabuľky pre tabuľku `zakaznik`
+--
+
+CREATE TABLE `zakaznik` (
+  `ID_zakaznika` int(10) UNSIGNED NOT NULL,
+  `Zak_Nazov_firmy` varchar(50) DEFAULT NULL,
+  `Zak_Meno` varchar(50) NOT NULL,
+  `Zak_Priezvisko` varchar(50) NOT NULL,
+  `Zak_Email` varchar(50) NOT NULL,
+  `Zak_Telefon` varchar(20) NOT NULL,
+  `Zak_Ulica_cislo_fakturacna` varchar(50) NOT NULL,
+  `Zak_Mesto_fakturacna` varchar(50) NOT NULL,
+  `Zak_PSC_fakturacna` varchar(5) NOT NULL,
+  `Zak_Ulica_cislo_dodacia` varchar(50) DEFAULT NULL,
+  `Zak_Mesto_dodacia` varchar(50) DEFAULT NULL,
+  `Zak_PSC_dodacia` varchar(5) DEFAULT NULL,
+  `Zak_ICO` varchar(8) DEFAULT NULL,
+  `Zak_DIC` varchar(10) DEFAULT NULL,
+  `Zak_IC_DPH` varchar(12) DEFAULT NULL,
+  `Zak_Nazov_banky` varchar(50) DEFAULT NULL,
+  `Zak_Cislo_uctu` varchar(30) DEFAULT NULL,
+  `Zak_Poznamka` varchar(200) DEFAULT NULL,
+  `ID_pouzivatela` int(10) UNSIGNED DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Sťahujem dáta pre tabuľku `zakaznik`
+--
+
+
+--
+-- Štruktúra tabuľky pre tabuľku `zamestnanec`
+--
+
+CREATE TABLE `zamestnanec` (
+  `ID_zamestnanca` int(10) UNSIGNED NOT NULL,
+  `Zam_Meno` varchar(20) NOT NULL,
+  `Zam_Priezvisko` varchar(50) NOT NULL,
+  `Zam_Datum_narodenia` date NOT NULL,
+  `Zam_Email` varchar(50) NOT NULL,
+  `Zam_Telefon` varchar(20) NOT NULL,
+  `Zam_Ulica_cislo` varchar(50) NOT NULL,
+  `Zam_Mesto` varchar(50) NOT NULL,
+  `Zam_PSC` varchar(5) NOT NULL,
+  `Druh_zamestnania` int(10) UNSIGNED NOT NULL,
+  `Uvazok` int(10) UNSIGNED NOT NULL,
+  `Pracovna_pozicia` varchar(30) DEFAULT NULL,
+  `Datum_nastupu` date DEFAULT NULL,
+  `Zam_Nazov_firmy` varchar(50) DEFAULT NULL,
+  `Zam_ICO` varchar(8) DEFAULT NULL,
+  `Zam_DIC` varchar(10) DEFAULT NULL,
+  `Zam_IC_DPH` varchar(12) DEFAULT NULL,
+  `Zam_Nazov_banky` varchar(50) DEFAULT NULL,
+  `Zam_Cislo_uctu` varchar(30) DEFAULT NULL,
+  `Zam_Poznamka` varchar(200) DEFAULT NULL,
+  `ID_pouzivatela` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 --
 -- Kľúče pre exportované tabuľky
 --
+
+
+--
+-- Indexy pre tabuľku `objednavka`
+--
+ALTER TABLE `objednavka`
+  ADD PRIMARY KEY (`ID_objednavky`),
+  ADD KEY `IXFK_Objednavka_Registrovany_Pouzivatel` (`ID_pouzivatela`),
+  ADD KEY `IXFK_Objednavka_Zakaznik` (`ID_zakaznika`),
+  ADD KEY `IXFK_Objednavka_Zamestnanec` (`ID_zamestnanca`);
+
+
+--
+-- Indexy pre tabuľku `prilohy`
+--
+ALTER TABLE `prilohy`
+  ADD PRIMARY KEY (`ID_prilohy`),
+  ADD KEY `IXFK_Prilohy_Objednavka` (`ID_objednavky`);
+
+--
+-- Indexy pre tabuľku `registrovany_pouzivatel`
+--
+ALTER TABLE `registrovany_pouzivatel`
+  ADD PRIMARY KEY (`ID_pouzivatela`);
+  
 
 --
 -- Indexy pre tabuľku `sluzba`
 --
 ALTER TABLE `sluzba`
   ADD PRIMARY KEY (`ID_sluzby`);
-  
+
+
+--
+-- Indexy pre tabuľku `sluzby_na_objednavke`
+--
+ALTER TABLE `sluzby_na_objednavke`
+  ADD PRIMARY KEY (`ID_sluzby_na_objednavke`),
+  ADD KEY `IXFK_Sluzby_na_objednavke_Objednavka` (`ID_objednavky`),
+  ADD KEY `IXFK_Sluzby_na_objednavke_Sluzba` (`ID_sluzby`);
+
+--
+-- Indexy pre tabuľku `zakaznik`
+--
+ALTER TABLE `zakaznik`
+  ADD PRIMARY KEY (`ID_zakaznika`),
+  ADD KEY `IXFK_Zakaznik_Registrovany_Pouzivatel` (`ID_pouzivatela`);
+
+--
+-- Indexy pre tabuľku `zamestnanec`
+--
+ALTER TABLE `zamestnanec`
+  ADD PRIMARY KEY (`ID_zamestnanca`),
+  ADD KEY `IXFK_Zamestnanec_Registrovany_Pouzivatel` (`ID_pouzivatela`);
+
+--
+-- AUTO_INCREMENT pre exportované tabuľky
+--
+
+
+--
+-- AUTO_INCREMENT pre tabuľku `objednavka`
+--
+ALTER TABLE `objednavka`
+  MODIFY `ID_objednavky` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+
+
+--
+-- AUTO_INCREMENT pre tabuľku `prilohy`
+--
+ALTER TABLE `prilohy`
+  MODIFY `ID_prilohy` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+
+--
+-- AUTO_INCREMENT pre tabuľku `registrovany_pouzivatel`
+--
+ALTER TABLE `registrovany_pouzivatel`
+  MODIFY `ID_pouzivatela` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+
+--
+-- AUTO_INCREMENT pre tabuľku `sluzba`
+--
+ALTER TABLE `sluzba`
+  MODIFY `ID_sluzby` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+
+
+--
+-- AUTO_INCREMENT pre tabuľku `sluzby_na_objednavke`
+--
+ALTER TABLE `sluzby_na_objednavke`
+  MODIFY `ID_sluzby_na_objednavke` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
+
+--
+-- AUTO_INCREMENT pre tabuľku `zakaznik`
+--
+ALTER TABLE `zakaznik`
+  MODIFY `ID_zakaznika` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+
+--
+-- AUTO_INCREMENT pre tabuľku `zamestnanec`
+--
+ALTER TABLE `zamestnanec`
+  MODIFY `ID_zamestnanca` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Obmedzenie pre exportované tabuľky
 --
 
+
 --
--- 
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
