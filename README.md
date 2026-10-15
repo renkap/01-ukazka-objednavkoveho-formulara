@@ -1,4 +1,4 @@
-# 01-ukazka-objenavkoveho-formulara
+# 01-ukazka-objednavkoveho-formulara
 Jednoduchý formulár na objednávku pre reklamné študio. Administrácia služieb nie je zahrnutá
 Použité technológie: XAMPP, PHP, MySQL, Javascript. Je možné pozrieť na www-stranky.sk/reklamnestudio/objednavka.php
 1. install xampp
