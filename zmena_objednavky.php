@@ -19,26 +19,26 @@ $_SESSION["hlaska"] = "";
 
 if ($_POST["akcia"]=="insert" && $_POST["Obj_Meno"]!="" && $_POST["back"] != "Späť"){  // ak je akcia insert z hidden parametru formulara a vyplnené meno nesmie byt prazdne
 	
- 	$ID = $_POST["ID_objednavky"];
-	$Datum_vytvorenia = date("Y/m/d");
-	$Datum_upravy = date("Y/m/d");
-	$Nazov_firmy = Trim($_POST["Obj_Nazov_firmy"]);
-	$Meno = Trim($_POST["Obj_Meno"]);
-	$Priezvisko = Trim($_POST["Obj_Priezvisko"]);
-	$Email = Trim($_POST["Obj_Email"]);
-	$Telefon = Trim($_POST["Obj_Telefon"]);
-	$Ulica_cislo_fakturacna = Trim($_POST["Obj_Ulica_cislo_fakturacna"]);
-	$Mesto_fakturacna = Trim($_POST["Obj_Mesto_fakturacna"]);
-	$PSC_fakturacna = Trim($_POST["Obj_PSC_fakturacna"]);
-	$Ulica_cislo_dodacia = Trim($_POST["Obj_Ulica_cislo_dodacia"]);
-	$Mesto_dodacia = Trim($_POST["Obj_Mesto_dodacia"]);
-	$PSC_dodacia = Trim($_POST["Obj_PSC_dodacia"]);
-	$ICO = Trim($_POST["Obj_ICO"]);
-	$DIC = Trim($_POST["Obj_DIC"]);
-	$IC_DPH = Trim($_POST["Obj_IC_DPH"]);
-	$Stav_objednavky = Trim($_POST["Stav_objednavky"]);
-	$Prideleny_zamestnanec=Trim($_POST["Prideleny_zamestnanec"]);
-	$Poznamka = Trim($_POST["Obj_Poznamka"]);
+ 	$ID = mysqli_real_escape_string($dblink, strip_tags($_POST["ID_objednavky"]));
+	$Datum_vytvorenia = mysqli_real_escape_string($dblink, strip_tags(date("Y/m/d")));
+	$Datum_upravy = mysqli_real_escape_string($dblink, strip_tags(date("Y/m/d")));
+	$Nazov_firmy = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Obj_Nazov_firmy"])));
+	$Meno = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Obj_Meno"])));
+	$Priezvisko = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Obj_Priezvisko"])));
+	$Email = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Obj_Email"])));
+	$Telefon = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Obj_Telefon"])));
+	$Ulica_cislo_fakturacna = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Obj_Ulica_cislo_fakturacna"])));
+	$Mesto_fakturacna = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Obj_Mesto_fakturacna"])));
+	$PSC_fakturacna = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Obj_PSC_fakturacna"])));
+	$Ulica_cislo_dodacia = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Obj_Ulica_cislo_dodacia"])));
+	$Mesto_dodacia = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Obj_Mesto_dodacia"])));
+	$PSC_dodacia = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Obj_PSC_dodacia"])));
+	$ICO = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Obj_ICO"])));
+	$DIC = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Obj_DIC"])));
+	$IC_DPH = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Obj_IC_DPH"])));
+	$Stav_objednavky = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Stav_objednavky"])));
+	$Prideleny_zamestnanec=mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Prideleny_zamestnanec"])));
+	$Poznamka = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Obj_Poznamka"])));
 			
 	// Kontrola či zakaznik existuje v systeme
 	
@@ -73,18 +73,17 @@ if ($_POST["akcia"]=="insert" && $_POST["Obj_Meno"]!="" && $_POST["back"] != "Sp
 								    '$Ulica_cislo_dodacia','$Mesto_dodacia','$PSC_dodacia',
 								    '$ICO','$DIC','$IC_DPH','$Poznamka')";	
 									
-		$vysledok = mysqli_query($dblink, $sql); // vykonam sql prikaz select a vysledok načítame do premennej $vysledok
+		$vysledok = mysqli_query($dblink, $sql); 
 		if (!$vysledok)
 		{ 
 			$hlaska = "Chyba pri vkladani zakaznika! </br>";
 		}
 		else
 		{		
-			$ID_posledneho_zaznamu = mysqli_insert_id($dblink);
-			$hlaska = "<p class='oznam'>Zákaznik číslo $ID_posledneho_zaznamu - $Nazov_firmy $Meno $Priezvisko bol pridaný do databázy</p>";
+			$ID_zakaznika = mysqli_insert_id($dblink);
+			$hlaska = "<p class='oznam'>Zákaznik číslo $ID_zakaznika - $Nazov_firmy $Meno $Priezvisko bol pridaný do databázy</p>";
 		}
 	
-		$ID_zakaznika = mysqli_insert_id($dblink);
 	}
 	$sql = "INSERT INTO objednavka(ID_objednavky,Obj_Datum_vytvorenia,Obj_Datum_upravy,Obj_Nazov_firmy,
 								   Obj_Meno,Obj_Priezvisko,Obj_Email,Obj_Telefon,Obj_Ulica_cislo_fakturacna,Obj_Mesto_fakturacna,Obj_PSC_fakturacna,
@@ -190,25 +189,25 @@ if ($_POST["akcia"]=="insert" && $_POST["Obj_Meno"]!="" && $_POST["back"] != "Sp
 // ---------------- Idem Upravit zaznam do tabuluky ------------------
 if ($_POST["akcia"]=="update" && $_POST["ID_objednavky"]!="" && $_POST["back"] != "Späť"){ // chcem akciu update z hidden parametru formulara a meno nesmie byt prazdne
 
- 	$ID = $_POST["ID_objednavky"];
-	$Datum_upravy = date("Y/m/d");
-	$Nazov_firmy = Trim($_POST["Obj_Nazov_firmy"]);
-	$Meno = Trim($_POST["Obj_Meno"]);
-	$Priezvisko = Trim($_POST["Obj_Priezvisko"]);
-	$Email = Trim($_POST["Obj_Email"]);
-	$Telefon = Trim($_POST["Obj_Telefon"]);
-	$Ulica_cislo_fakturacna = Trim($_POST["Obj_Ulica_cislo_fakturacna"]);
-	$Mesto_fakturacna = Trim($_POST["Obj_Mesto_fakturacna"]);
-	$PSC_fakturacna = Trim($_POST["Obj_PSC_fakturacna"]);
-	$Ulica_cislo_dodacia = Trim($_POST["Obj_Ulica_cislo_dodacia"]);
-	$Mesto_dodacia = Trim($_POST["Obj_Mesto_dodacia"]);
-	$PSC_dodacia = Trim($_POST["Obj_PSC_dodacia"]);
-	$ICO = Trim($_POST["Obj_ICO"]);
-	$DIC = Trim($_POST["Obj_DIC"]);
-	$IC_DPH = Trim($_POST["Obj_IC_DPH"]);
-	$Stav_objednavky = Trim($_POST["Stav_objednavky"]);
-	$Prideleny_zamestnanec = Trim($_POST["Prideleny_zamestnanec"]);
-	$Poznamka = Trim($_POST["Obj_Poznamka"]);
+ 	$ID = mysqli_real_escape_string($dblink, strip_tags($_POST["ID_objednavky"]));
+	$Datum_upravy = mysqli_real_escape_string($dblink, strip_tags(date("Y/m/d")));
+	$Nazov_firmy = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Obj_Nazov_firmy"])));
+	$Meno = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Obj_Meno"])));
+	$Priezvisko = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Obj_Priezvisko"])));
+	$Email = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Obj_Email"])));
+	$Telefon = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Obj_Telefon"])));
+	$Ulica_cislo_fakturacna = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Obj_Ulica_cislo_fakturacna"])));
+	$Mesto_fakturacna = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Obj_Mesto_fakturacna"])));
+	$PSC_fakturacna = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Obj_PSC_fakturacna"])));
+	$Ulica_cislo_dodacia = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Obj_Ulica_cislo_dodacia"])));
+	$Mesto_dodacia = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Obj_Mesto_dodacia"])));
+	$PSC_dodacia = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Obj_PSC_dodacia"])));
+	$ICO = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Obj_ICO"])));
+	$DIC = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Obj_DIC"])));
+	$IC_DPH = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Obj_IC_DPH"])));
+	$Stav_objednavky = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Stav_objednavky"])));
+	$Prideleny_zamestnanec = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Prideleny_zamestnanec"])));
+	$Poznamka = mysqli_real_escape_string($dblink, strip_tags(Trim($_POST["Obj_Poznamka"])));
 	
 	$Pouz_ID = $_SESSION['Login_ID_pouzivatela'];
 	
